@@ -1,5 +1,7 @@
-import numpy as np
 import random
+
+import numpy as np
+
 
 class Individual:
     def __init__(self, vector):
@@ -12,7 +14,7 @@ class Individual:
         self.score = score
         self.r_score = r_score
         self.c_score = c_score
-        
+
 
 def get_col_items(board, col):
     items = [row[col] for row in board]
@@ -47,38 +49,39 @@ def is_valid_list(row_col):
 
 def is_valid_matrix(solution):
     # validates that every row and column contain diferent numbers
-    
+
     # 1. validate rows:
     for row in solution:
         if not is_valid_list(row):
             print("row invalid")
             return False
-            
+
     # 2. validate columns:
     for i in range(4):
         col = get_col_items(solution, i)
         if not is_valid_list(col):
             print("col invalid")
             return False
-    
+
     return True
- 
+
 
 def validate_solution(solution, clues):
     # the solution must contain different numbers on each row
     # and column, and must acomplish the clues
-    
+
     # 1. validate matrix
     if not is_valid_matrix(solution):
         print("invalid matrix")
         return False
-        
+
     # 2. validate clues
     pass
-    
+
     return True
-    
-def score_solution(solution, clues = []):
+
+
+def score_solution(solution, clues=[]):
     """
     this function will give points to a solution
     It will give points for every row, and column
@@ -87,12 +90,12 @@ def score_solution(solution, clues = []):
     n = 4
     row_score = 0
     col_score = 0
-    
+
     # score of rows
     for row in solution:
         if is_valid_list(row):
             row_score += 1
-    
+
     # score of columns
     for i in range(n):
         col = get_col_items(solution, i)
@@ -100,6 +103,7 @@ def score_solution(solution, clues = []):
             col_score += 1
     total_score = row_score+col_score
     return total_score, row_score, col_score
+
 
 def print_matrix(matrix):
     n = len(matrix)
@@ -113,7 +117,7 @@ def vector2matrix(vector):
     # of 4x4
     n = 4
     matrix = []
-    
+
     for _ in range(n):
         row = vector[:n]
         matrix.append(row)
@@ -122,7 +126,7 @@ def vector2matrix(vector):
 
 
 def matrix2vector(matrix):
-    # this functions takes a matrix and return a vector. 
+    # this functions takes a matrix and return a vector.
     # its like a flatten function
     vector = [elem for row in matrix for elem in row]
     return vector
@@ -140,27 +144,28 @@ def generate_population(num):
         vector = rand_int_list(start, end, indiv_len)
         indiv = Individual(vector)
         population.append(indiv)
-    
+
     return population
+
 
 def copulate_indiv(indiv1, indiv2):
     # this function generates the childs of 2 individuals
     n = len(indiv1.vector)
     vector1 = indiv1.vector[:n//2] + indiv2.vector[n//2:]
     vector2 = indiv2.vector[:n//2] + indiv1.vector[n//2:]
-    
-    vector3 = [] # gens intercalated
-    vector4 = [] # gens intercalated
+
+    vector3 = []  # gens intercalated
+    vector4 = []  # gens intercalated
     for i in range(n):
-        if i%2==0:
+        if i % 2 == 0:
             vector3.append(indiv1.vector[i])
             vector4.append(indiv2.vector[i])
         else:
             vector3.append(indiv2.vector[i])
             vector4.append(indiv1.vector[i])
 
-    vector5 = random.choices(indiv1.vector+indiv2.vector, k=n) # totally random gens
-    vector6 = random.choices(indiv1.vector+indiv2.vector, k=n) # totally random gens
+    vector5 = random.choices(indiv1.vector+indiv2.vector, k=n)  # totally random gens
+    vector6 = random.choices(indiv1.vector+indiv2.vector, k=n)  # totally random gens
 
     child1 = Individual(vector1)
     child2 = Individual(vector2)
@@ -168,12 +173,11 @@ def copulate_indiv(indiv1, indiv2):
     child4 = Individual(vector4)
     child5 = Individual(vector5)
     child6 = Individual(vector6)
-    
-
 
     return child1, child2, child3, child4, child5, child6
 
-def solve_puzzle (clues):
+
+def solve_puzzle(clues):
     # solution = ( (1, 2, 3, 4), (2, 3, 4, 1), (3, 4, 1, 2), (4, 1, 2, 3) )
     # print(is_valid_matrix(solution))
 
@@ -183,22 +187,19 @@ def solve_puzzle (clues):
     # print("is valid?", validate_solution(rand_sol, clues))
     # print("score", score_solution(rand_sol, clues))
 
-
-
     print("experiments with population")
-    
     population = generate_population(200)
 
     # sort the population
     population.sort(key=lambda x: x.score, reverse=True)
 
     max_population = 800
-    num_generations = 100
+    num_generations = 101
     for generation in range(num_generations):
         # generate new generation
-        
+
         next_gen = []
-        num_copulators = 100 # num of indivituals that will copulate
+        num_copulators = 100  # num of indivituals that will copulate
         for i in range(0, num_copulators, 2):
             ind1 = population[i]
             ind2 = population[i+1]
@@ -209,7 +210,7 @@ def solve_puzzle (clues):
             next_gen.append(chld4)
             next_gen.append(chld5)
             next_gen.append(chld6)
-        
+
         population = population + next_gen
 
         # kill the worst
@@ -217,18 +218,17 @@ def solve_puzzle (clues):
         population = population[:max_population]
 
         # print the best of the generation
-        if generation%10 ==0:
+        if generation % 10 == 0:
             print("best of gen", generation)
             print_matrix(population[0].matrix)
             print("score:", population[0].score)
-    
 
     # for i, indiv in enumerate(population):
     #     print("indivial", i)
     #     print_matrix(indiv.matrix)
     #     print("score", indiv.score)
 
-    return ( (1, 2, 3, 4), (2, 3, 4, 1), (3, 4, 1, 2), (4, 1, 2, 3) )
+    return ((1, 2, 3, 4), (2, 3, 4, 1), (3, 4, 1, 2), (4, 1, 2, 3))
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
+# https://www.codewars.com/kata/5671d975d81d6c1c87000022
 import random
-
 import numpy as np
 
 
@@ -64,6 +64,24 @@ def is_valid_matrix(solution):
             return False
 
     return True
+
+
+def validate_clue(clue, buildings):
+    # this function validates if a clue is valid given
+    # a list of the buildings.
+    # *buildings is a list
+
+    num_observed = 0
+    higher = 0
+    for i in range(len(buildings)):
+        building = buildings[i]
+        if building > higher:
+            num_observed += 1
+    
+    return num_observed == clue
+
+def are_valid_clues(solution, clues):
+    pass
 
 
 def validate_solution(solution, clues):
@@ -233,3 +251,25 @@ def solve_puzzle(clues):
 
 if __name__ == "__main__":
     solve_puzzle("")
+
+clues = (
+( 2, 2, 1, 3,  
+  2, 2, 3, 1,  
+  1, 2, 2, 3,  
+  3, 2, 1, 3 ),
+( 0, 0, 1, 2,   
+  0, 2, 0, 0,   
+  0, 3, 0, 0, 
+  0, 1, 0, 0 )
+)
+
+outcomes = (
+( ( 1, 3, 4, 2 ),       
+  ( 4, 2, 1, 3 ),       
+  ( 3, 4, 2, 1 ),
+  ( 2, 1, 3, 4 ) ),
+( ( 2, 1, 4, 3 ), 
+  ( 3, 4, 1, 2 ), 
+  ( 4, 2, 3, 1 ), 
+  ( 1, 3, 2, 4 ) )
+)

@@ -73,11 +73,10 @@ def validate_clue(clue, buildings):
 
     num_observed = 0
     higher = 0
-    for i in range(len(buildings)):
-        building = buildings[i]
+    for building in buildings:
         if building > higher:
             num_observed += 1
-    
+            higher = building
     return num_observed == clue
 
 def are_valid_clues(solution, clues):
@@ -205,6 +204,7 @@ def solve_puzzle(clues):
     # print("is valid?", validate_solution(rand_sol, clues))
     # print("score", score_solution(rand_sol, clues))
 
+    """
     print("experiments with population")
     population = generate_population(200)
 
@@ -240,6 +240,8 @@ def solve_puzzle(clues):
             print("best of gen", generation)
             print_matrix(population[0].matrix)
             print("score:", population[0].score)
+    """
+    print(validate_clue(3, [1, 2, 4, 3]))
 
     # for i, indiv in enumerate(population):
     #     print("indivial", i)
@@ -252,24 +254,26 @@ def solve_puzzle(clues):
 if __name__ == "__main__":
     solve_puzzle("")
 
-clues = (
-( 2, 2, 1, 3,  
-  2, 2, 3, 1,  
-  1, 2, 2, 3,  
-  3, 2, 1, 3 ),
-( 0, 0, 1, 2,   
-  0, 2, 0, 0,   
-  0, 3, 0, 0, 
-  0, 1, 0, 0 )
-)
+    """
+    clues = (
+    ( 2, 2, 1, 3,  
+    2, 2, 3, 1,  
+    1, 2, 2, 3,  
+    3, 2, 1, 3 ),
+    ( 0, 0, 1, 2,   
+    0, 2, 0, 0,   
+    0, 3, 0, 0, 
+    0, 1, 0, 0 )
+    )
 
-outcomes = (
-( ( 1, 3, 4, 2 ),       
-  ( 4, 2, 1, 3 ),       
-  ( 3, 4, 2, 1 ),
-  ( 2, 1, 3, 4 ) ),
-( ( 2, 1, 4, 3 ), 
-  ( 3, 4, 1, 2 ), 
-  ( 4, 2, 3, 1 ), 
-  ( 1, 3, 2, 4 ) )
-)
+    outcomes = (
+    ( ( 1, 3, 4, 2 ),       
+    ( 4, 2, 1, 3 ),       
+    ( 3, 4, 2, 1 ),
+    ( 2, 1, 3, 4 ) ),
+    ( ( 2, 1, 4, 3 ), 
+    ( 3, 4, 1, 2 ), 
+    ( 4, 2, 3, 1 ), 
+    ( 1, 3, 2, 4 ) )
+    )
+    """

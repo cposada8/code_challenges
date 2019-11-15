@@ -4,16 +4,19 @@ import numpy as np
 
 
 class Individual:
-    def __init__(self, vector):
+    def __init__(self, vector, clues):
         self.vector = vector
         self.matrix = vector2matrix(self.vector)
+        self.clues = clues
         self.get_score()
 
     def get_score(self):
-        score, r_score, c_score = score_solution(self.matrix)
+        score, r_score, c_score, cl_score = \
+            score_solution(self.matrix, self.clues)
         self.score = score
         self.r_score = r_score
         self.c_score = c_score
+        self.cl_score = cl_score
 
 
 def get_col_items(board, col):
@@ -79,9 +82,6 @@ def validate_clue(clue, buildings):
             higher = building
     return num_observed == clue
 
-def are_valid_clues(solution, clues):
-    pass
-
 
 def validate_solution(solution, clues):
     # the solution must contain different numbers on each row
@@ -107,6 +107,7 @@ def score_solution(solution, clues=[]):
     n = 4
     row_score = 0
     col_score = 0
+    clue_score = 0
 
     # score of rows
     for row in solution:
@@ -118,8 +119,17 @@ def score_solution(solution, clues=[]):
         col = get_col_items(solution, i)
         if is_valid_list(col):
             col_score += 1
-    total_score = row_score+col_score
-    return total_score, row_score, col_score
+
+    # score clues
+    buildings4clues = get_buildings_for_clues(solution)
+    for i, buildings in enumerate(buildings4clues):
+        clue = clues[i]
+        if clue != 0:
+            if validate_clue(clue, buildings):
+                clue_score += 1
+
+    total_score = row_score + col_score + clue_score
+    return total_score, row_score, col_score, clue_score
 
 
 def print_matrix(matrix):
@@ -149,7 +159,7 @@ def matrix2vector(matrix):
     return vector
 
 
-def generate_population(num):
+def generate_population(num, clues):
     # this function creates the population for the genetic algorithm
     # it will create 'num' individuals from that population
     indiv_len = 16
@@ -159,13 +169,13 @@ def generate_population(num):
     population = []
     for _ in range(num):
         vector = rand_int_list(start, end, indiv_len)
-        indiv = Individual(vector)
+        indiv = Individual(vector, clues)
         population.append(indiv)
 
     return population
 
 
-def copulate_indiv(indiv1, indiv2):
+def copulate_indiv(indiv1, indiv2, clues):
     # this function generates the childs of 2 individuals
     n = len(indiv1.vector)
     vector1 = indiv1.vector[:n//2] + indiv2.vector[n//2:]
@@ -181,38 +191,77 @@ def copulate_indiv(indiv1, indiv2):
             vector3.append(indiv2.vector[i])
             vector4.append(indiv1.vector[i])
 
-    vector5 = random.choices(indiv1.vector+indiv2.vector, k=n)  # totally random gens
-    vector6 = random.choices(indiv1.vector+indiv2.vector, k=n)  # totally random gens
+    vector5 = random.choices(indiv1.vector+indiv2.vector, k=n)  # random gens
+    vector6 = random.choices(indiv1.vector+indiv2.vector, k=n)  # random gens
 
-    child1 = Individual(vector1)
-    child2 = Individual(vector2)
-    child3 = Individual(vector3)
-    child4 = Individual(vector4)
-    child5 = Individual(vector5)
-    child6 = Individual(vector6)
+    child1 = Individual(vector1, clues)
+    child2 = Individual(vector2, clues)
+    child3 = Individual(vector3, clues)
+    child4 = Individual(vector4, clues)
+    child5 = Individual(vector5, clues)
+    child6 = Individual(vector6, clues)
 
     return child1, child2, child3, child4, child5, child6
 
 
+def get_buildings_for_clues(solution):
+    n_clues = 16  # the number of clues
+    buildings4clues = []
+
+    # group 1
+    for i in range(4):
+        items = list(get_col_items(solution, i))
+        buildings4clues.append(items)
+
+    # group 2
+    for i in range(4):
+        items = list(solution[i])[::-1]
+        buildings4clues.append(items)
+
+    # group 3
+    for i in reversed(range(4)):
+        items = list(get_col_items(solution, i))[::-1]
+        buildings4clues.append(items)
+
+    # group 4
+    for i in reversed(range(4)):
+        items = list(solution[i])
+        buildings4clues.append(items)
+
+    return buildings4clues
+
+
+def are_valid_clues(solution, clues):
+    # selection of the first 4 clues
+    buildings4clues = get_buildings_for_clues(solution)
+
+    for i, buildings in enumerate(buildings4clues):
+        clue = clues[i]
+        if clue != 0:
+            valid = validate_clue(clue, buildings)
+            if not valid:
+                return False
+    return True
+
+
 def solve_puzzle(clues):
-    # solution = ( (1, 2, 3, 4), (2, 3, 4, 1), (3, 4, 1, 2), (4, 1, 2, 3) )
-    # print(is_valid_matrix(solution))
+    clues = (2, 2, 1, 3,
+             2, 2, 3, 1,
+             1, 2, 2, 3,
+             3, 2, 1, 3)
+    solution = ((1, 3, 4, 2),
+                (4, 2, 1, 3),
+                (3, 4, 2, 1),
+                (2, 1, 3, 4))
 
-    # rand_sol = create_random_solution()
-    # print(rand_sol)
-    # print_matrix(rand_sol)
-    # print("is valid?", validate_solution(rand_sol, clues))
-    # print("score", score_solution(rand_sol, clues))
-
-    """
     print("experiments with population")
-    population = generate_population(200)
+    population = generate_population(100, clues)
 
     # sort the population
     population.sort(key=lambda x: x.score, reverse=True)
 
-    max_population = 800
-    num_generations = 101
+    max_population = 500
+    num_generations = 1000
     for generation in range(num_generations):
         # generate new generation
 
@@ -221,7 +270,8 @@ def solve_puzzle(clues):
         for i in range(0, num_copulators, 2):
             ind1 = population[i]
             ind2 = population[i+1]
-            chld1, chld2, chld3, chld4, chld5, chld6 = copulate_indiv(ind1, ind2)
+            chld1, chld2, chld3, chld4, chld5, chld6 = \
+                copulate_indiv(ind1, ind2, clues)
             next_gen.append(chld1)
             next_gen.append(chld2)
             next_gen.append(chld3)
@@ -236,17 +286,10 @@ def solve_puzzle(clues):
         population = population[:max_population]
 
         # print the best of the generation
-        if generation % 10 == 0:
+        if generation % 20 == 0:
             print("best of gen", generation)
             print_matrix(population[0].matrix)
             print("score:", population[0].score)
-    """
-    print(validate_clue(3, [1, 2, 4, 3]))
-
-    # for i, indiv in enumerate(population):
-    #     print("indivial", i)
-    #     print_matrix(indiv.matrix)
-    #     print("score", indiv.score)
 
     return ((1, 2, 3, 4), (2, 3, 4, 1), (3, 4, 1, 2), (4, 1, 2, 3))
 
@@ -256,24 +299,33 @@ if __name__ == "__main__":
 
     """
     clues = (
-    ( 2, 2, 1, 3,  
-    2, 2, 3, 1,  
-    1, 2, 2, 3,  
+    ( 2, 2, 1, 3,
+    2, 2, 3, 1,
+    1, 2, 2, 3,
     3, 2, 1, 3 ),
-    ( 0, 0, 1, 2,   
-    0, 2, 0, 0,   
-    0, 3, 0, 0, 
+    ( 0, 0, 1, 2,
+    0, 2, 0, 0,
+    0, 3, 0, 0,
     0, 1, 0, 0 )
     )
 
     outcomes = (
-    ( ( 1, 3, 4, 2 ),       
-    ( 4, 2, 1, 3 ),       
+    ( ( 1, 3, 4, 2 ),
+    ( 4, 2, 1, 3 ),
     ( 3, 4, 2, 1 ),
     ( 2, 1, 3, 4 ) ),
-    ( ( 2, 1, 4, 3 ), 
-    ( 3, 4, 1, 2 ), 
-    ( 4, 2, 3, 1 ), 
+    ( ( 2, 1, 4, 3 ),
+    ( 3, 4, 1, 2 ),
+    ( 4, 2, 3, 1 ),
     ( 1, 3, 2, 4 ) )
     )
     """
+
+    # solution = ( (1, 2, 3, 4), (2, 3, 4, 1), (3, 4, 1, 2), (4, 1, 2, 3) )
+    # print(is_valid_matrix(solution))
+
+    # rand_sol = create_random_solution()
+    # print(rand_sol)
+    # print_matrix(rand_sol)
+    # print("is valid?", validate_solution(rand_sol, clues))
+    # print("score", score_solution(rand_sol, clues))

@@ -1,11 +1,11 @@
 # https://www.codewars.com/kata/take-a-ten-minute-walk/train/python/5dc08c5f576239001ea5cec5
 
+
 def isValidWalk(walk):
-    #determine if walk is valid
-    print(walk)
+    # determine if walk is valid
     if len(walk) != 10:
         return False
-    
+
     horizonal_count = 0
     vertical_count = 0
     for elem in walk:

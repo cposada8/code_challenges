@@ -3,11 +3,11 @@
 
 def alphabet_position(text):
     alphabet = "abcdefghijklmnopqrstuvwxyz"
-    
+
     positions = []
-    
+
     for let in text:
         if let.lower() in alphabet:
-            positions.append( str(alphabet.find(let.lower())+1))
-    
+            positions.append(str(alphabet.find(let.lower()) + 1))
+
     return " ".join(positions)

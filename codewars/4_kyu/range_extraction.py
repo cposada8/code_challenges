@@ -19,18 +19,17 @@ def solution(args):
                 last_added = j
             else:
                 break
-                
-        if len(consecutives)>2:
-            actual_solution = str(consecutives[0]) + "-" + str(consecutives[-1])
+
+        if len(consecutives) > 2:
+            actual_solution = \
+                str(consecutives[0]) + "-" + str(consecutives[-1])
             solutions.append(actual_solution)
-        elif len(consecutives)==2:
+        elif len(consecutives) == 2:
             solutions.append(consecutives[0])
             solutions.append(consecutives[1])
         else:
             solutions.append(consecutives[0])
         i = last_added+1
-        
+
     solutions = ",".join([str(sol) for sol in solutions])
     return solutions
-            
-            

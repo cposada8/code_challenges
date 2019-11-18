@@ -1,0 +1,224 @@
+// https://www.hackerrank.com/challenges/matrix-rotation-algo/submissions/code/39067217
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    
+    
+    static int[] filaSuperior(int m, int n, int[][] matriz, int ring){
+        //esta funcion recibe una matriz de mxn y un número de anillo y entrega la fila superior de ese anillo
+        int [] fsup = new int[n-2*(ring-1)];
+        int colInicio, colFin;
+        colInicio = ring-1;
+        colFin = n-1-(ring-1);
+        int row = ring-1;
+        int cont =0;
+        for(int i=colInicio;i<=colFin;i++){
+            fsup[cont]=matriz[row][i];
+            cont++;
+        }
+        return fsup;
+    }
+    static int[][] matrizfilaSuperior(int m, int n, int[][] matriz, int ring, int[] fsup){
+        int colInicio, colFin;
+        colInicio = ring-1;
+        colFin = n-1-(ring-1);
+        int row = ring-1;
+        int cont =0;
+        for(int i=colInicio;i<=colFin;i++){
+            matriz[row][i]=fsup[cont];
+            cont++;
+        }
+        return matriz;
+    }
+    
+    static int[] filaInferior(int m, int n, int[][] matriz, int ring){
+        //esta funcion recibe una matriz de mxn y un número de anillo y entrega la fila inferior de ese anillo
+        int [] finf = new int[n-2*(ring-1)];
+        int colInicio, colFin;
+        colInicio = ring-1;
+        colFin = n-1-(ring-1);
+        int row = m-1-(ring-1);
+        int cont =0;
+        for(int i=colInicio;i<=colFin;i++){
+            finf[cont]=matriz[row][i];
+            cont++;
+        }
+        return finf;
+    }
+    static int[][] matrizfilaInferior(int m, int n, int[][] matriz, int ring, int[] finf){
+        int colInicio, colFin;
+        colInicio = ring-1;
+        colFin = n-1-(ring-1);
+        int row = m-1-(ring-1);
+        int cont =0;
+        for(int i=colInicio;i<=colFin;i++){
+            matriz[row][i] = finf[cont];
+            cont++;
+        }
+        return matriz;
+    }
+    static int[] columnaIzq(int m, int n, int[][] matriz, int ring){
+        //esta funcion recibe una matriz de mxn y un número de anillo y entrega la columna izquierda de ese anillo
+        int [] colizq = new int[m-2*(ring-1)-2];
+        int filaInicio, filaFin;
+        filaInicio = ring-1;
+        filaFin = m-1-(ring-1);
+        int col = ring-1;
+        int cont =0;
+        for(int i=filaInicio+1;i<=filaFin-1;i++){
+            colizq[cont]=matriz[i][col];
+            cont++;
+        }
+        return colizq;
+    }
+    static int[][] matrizcolumnaIzq(int m, int n, int[][] matriz, int ring, int[] colizq){
+        int filaInicio, filaFin;
+        filaInicio = ring-1;
+        filaFin = m-1-(ring-1);
+        int col = ring-1;
+        int cont =0;
+        for(int i=filaInicio+1;i<=filaFin-1;i++){
+            matriz[i][col]=colizq[cont];
+            cont++;
+        }
+        return matriz;
+    }
+    
+    static int[] columnaDer(int m, int n, int[][] matriz, int ring){
+        //esta funcion recibe una matriz de mxn y un número de anillo y entrega la columna derecha de ese anillo
+        int [] colder = new int[m-2*(ring-1)-2];
+        int filaInicio, filaFin;
+        filaInicio = ring-1;
+        filaFin = m-1-(ring-1);
+        int col = n-1-(ring-1);
+        int cont =0;
+        for(int i=filaInicio+1;i<=filaFin-1;i++){
+            colder[cont]=matriz[i][col];
+            cont++;
+        }
+        return colder;
+    }
+    
+    static int[][] matrizcolumnaDer(int m, int n, int[][] matriz, int ring, int[] colder){
+        int filaInicio, filaFin;
+        filaInicio = ring-1;
+        filaFin = m-1-(ring-1);
+        int col = n-1-(ring-1);
+        int cont =0;
+        for(int i=filaInicio+1;i<=filaFin-1;i++){
+            matriz[i][col]=colder[cont];
+            cont++;
+        }
+        return matriz;
+    }   
+    static void printMatrix(int [][] matrix, int m, int n){
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                System.out.print(matrix[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+    static void printArray(int [] arr){
+        for(int i=0;i<arr.length;i++){
+            System.out.print(arr[i]+" ");
+        }
+        System.out.println();
+    }
+    
+    static int[] concat(int[] a,int[] b){
+        int aLen = a.length;
+        int bLen = b.length;
+        int total = aLen+bLen;
+        int concatenado[] = new int[total];
+        for(int i=0;i<aLen;i++){
+            concatenado[i] = a[i];
+        }
+        for(int i=0;i<bLen;i++){
+            concatenado[i+aLen] = b[i];
+        }
+        return concatenado;
+    }
+    static int[] reverseArray(int[] arr){
+        //esta función entrega el reverso de un arreglo.
+        int n= arr.length;
+        int[] resp = new int[n];
+        for(int i=0;i<n;i++){
+            resp[i]=arr[n-i-1];
+        }
+        return resp;
+    }
+    static int[] rotarAnillo(int[] anillo, int r){
+        //r es el número de rotaciones
+        int n = anillo.length;
+        int[] anilloRotado = new int[n];
+        for(int i=0;i<n;i++){
+               anilloRotado[(i+n-r%n)%n]=anillo[i];
+        }
+        return anilloRotado;
+    }
+    
+    public static void main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+        Scanner sc = new Scanner(System.in);
+        int m, n, r;
+        m = sc.nextInt();
+        n = sc.nextInt();
+        r = sc.nextInt();
+        int [][] matriz = new int[m][n];
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                matriz[i][j] = sc.nextInt();
+            }
+        }
+        int numRings = Math.min(m, n)/2;
+        for(int i=1;i<=numRings;i++){
+            
+            int fs[] = filaSuperior(m, n, matriz, i);
+            int fi[] = filaInferior(m, n, matriz, i);
+            int ci[] = columnaIzq(m, n, matriz, i);
+            int cd[] = columnaDer(m, n, matriz, i);
+            
+            //se concatenan los vectores para dejar un solo vector y rotarlo
+            int [] concat = concat(fs, cd);
+            concat = concat(concat, reverseArray(fi));
+            concat = concat(concat, reverseArray(ci));
+            int[] rotado = rotarAnillo(concat, r);
+            
+            
+            //se generan vectores nuevos pero con información ya rotada
+            int fs2[] = new int[fs.length];
+            int fi2[] = new int[fi.length];
+            int ci2[] = new int[ci.length];
+            int cd2[] = new int[cd.length];
+            //llenado de los vectores 2 (fi2, fs2, ci2, cd2)
+            for(int ii=0;ii<fs.length;ii++){
+                fs2[ii]= rotado[ii];
+            }
+            for(int ii=0;ii<cd.length;ii++){
+                cd2[ii]= rotado[ii+fs.length];
+            }
+            for(int ii=0;ii<fi.length;ii++){
+                fi2[ii] = rotado[ii+fs.length+cd.length];
+            }
+            for(int ii=0;ii<ci.length;ii++){
+                ci2[ii] = rotado[ii + fs.length+cd.length+fi.length];
+            }
+            ci2 = reverseArray(ci2);
+            fi2 = reverseArray(fi2);
+            
+            //se llena la matriz con la información rotada
+            matriz = matrizfilaSuperior(m,  n, matriz, i, fs2);
+            matriz = matrizfilaInferior(m,  n, matriz, i, fi2);
+            matriz = matrizcolumnaIzq(m,  n, matriz, i, ci2);
+            matriz = matrizcolumnaDer(m,  n, matriz, i, cd2);
+        }
+        printMatrix(matriz, m, n);
+    }
+}

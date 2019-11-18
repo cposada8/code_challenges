@@ -1,0 +1,71 @@
+// https://www.hackerrank.com/challenges/sherlock-and-divisors/problem
+
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    /*
+     * Complete the divisors function below.
+     */
+    static int divisors(int n) {
+        /*
+         * Write your code here.
+         */
+
+        // creo un set para guardar todos los divisores y que sean unicos. 
+        // se guardan por parejas
+        Set<Integer> hash_Set = new HashSet<Integer>();
+        int raiz = (int)(Math.sqrt(n))+1;
+        for(int i=1;i<raiz;i++){
+            if(n%i ==0){
+                hash_Set.add(i);
+                hash_Set.add(n/i);
+            }
+        }
+
+        int cont =0;
+        for(Integer x: hash_Set){
+            if(x%2 ==0)cont++;
+        }
+
+        return cont;
+        
+
+    }
+/*
+    static HashSet listaDivisores(int n){
+        Set<Integer> hash_Set = new HashSet<Integer>();
+        int raiz = (int)(Math.sqrt(n))+1;
+
+        for(int i=1;i<raiz;i++){
+            if(n%i ==0){
+                hash_Set.add(i);
+                hash_Set.add(n/i);
+            }
+        }
+        return hash_Set;
+    }
+*/
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int t = Integer.parseInt(scanner.nextLine().trim());
+
+        for (int tItr = 0; tItr < t; tItr++) {
+            int n = Integer.parseInt(scanner.nextLine().trim());
+
+            int result = divisors(n);
+
+            bufferedWriter.write(String.valueOf(result));
+            bufferedWriter.newLine();
+        }
+
+        bufferedWriter.close();
+    }
+}

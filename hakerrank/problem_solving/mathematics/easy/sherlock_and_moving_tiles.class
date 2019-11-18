@@ -1,0 +1,40 @@
+//https://www.hackerrank.com/challenges/sherlock-and-moving-tiles/problem
+
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        
+        Scanner sc = new Scanner(System.in);
+        long  s1, s2, nc;
+        double l, qi, vel; //s1x y s2x son las velocidades en el eje x
+        double distObj; //distancia objetivo en un solo eje.
+        double tiempo;  //el tiempo requerido para llegar a la distancia objetivo
+        l   =sc.nextDouble();
+        s1  =sc.nextLong();
+        s2  =sc.nextLong();
+        nc  =sc.nextLong();
+        
+        for(int i=0;i<nc;i++){
+            qi=sc.nextDouble();         //el área deseada
+            vel = Math.abs(s1-s2);      //la velocidad diagonal a la cual se alejan las esquinas inferiores izq de los 2 cuadrados
+            
+            //distObj es la distancia que se necesita que tengan ambos cuadrados. Esta distancia es igual a la distancia de la diagonal del cuadrado grande menos la diagonal del cuadrado objetivo.
+            distObj = Math.abs(Math.sqrt(2*l*l)-Math.sqrt(2*qi));
+            
+            //tiempo  = distanciaObjetivo/velocidad
+            tiempo = distObj / vel;
+            
+            System.out.println(tiempo);
+        }
+        
+        
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+    }
+}

@@ -1,0 +1,37 @@
+https://www.hackerrank.com/challenges/little-gaurav-and-sequence/problem
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+    
+    public static void main(String[] args) {
+        //se identificó en el problema que la sumatoria se puede dividir en 2 sumatorias,
+        //la primera sumatoria es la de 2^(2^i)
+        //la segunda sumatoria es la de 2^(2*j)
+        
+        //la primera suma se observó que sigue una serie 6,2,8,4,0 en el último dígito, esto depende de la i máxima
+        
+        //la segunda sumatoria se puede demostrar que sigue una secuencia 5, 1, 5, 1,... dependiendo de la n.
+        //  si n es par, la segunda sumatoria termina con 1, si es impar termina en 1.
+        Scanner sc= new Scanner(System.in);
+        int t=sc.nextInt();
+        long n;
+        int maxI;   //el i máximo que cumplirá con 2^i <= n
+        int digitSum1;      //el último dígito de la suma 1 (la de 2 a la 2 a la i)
+        int digitSum2;      //el último dígito de la suma 2 (la de 2 a la 2*j)
+        int resultado;      //el último dígito de la multiplicación de los últimos dígitos de las 2 sumatorias
+        int[] listaDijitos2ati = {0,6,2,8,4};
+        for(int i=0;i<t;i++){
+            n= sc.nextLong();
+            maxI = (int)(Math.log(n)/Math.log(2));
+            digitSum1 = listaDijitos2ati[maxI%5];
+            digitSum2 = (n%2==0) ? 1:5;
+            resultado = digitSum1*digitSum2%10;     //el %10 es para sacar el último dígito
+            System.out.println(resultado);
+        }
+    }
+}

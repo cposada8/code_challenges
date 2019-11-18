@@ -1,0 +1,50 @@
+// https://www.hackerrank.com/challenges/hyperspace-travel/problem
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    
+    static int[] median(int[][] matrix){
+        //esta función calcula la mediana por columnas. La mediana será igual al dato del medio si el tamaño del arreglo es impar         //y si el tamaño es par el dato será el menor de los dos que están en la mitad.
+        int m,n;
+        n = matrix.length;
+        m = matrix[0].length;
+        int []vector= new int[n];
+        int salida[] = new int[m];
+        for(int j=0; j<m;j++){
+            for(int i=0;i<n;i++){
+                vector[i]=matrix[i][j];
+            }
+            Arrays.sort(vector);
+            salida[j] = (n%2==0)?vector[n/2-1]:vector[(n-1)/2];
+        }
+        return salida;
+    }
+    
+    static void printVec(int[] vec){
+        int n = vec.length;
+        for(Integer i: vec){
+            System.out.print(i+" ");
+        }
+    }
+    
+    public static void main(String[] args) {
+        Scanner sn = new Scanner(System.in);
+        int n, m;
+        n = sn.nextInt();
+        m = sn.nextInt();
+        int matrix[][] = new int[n][m];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                matrix[i][j]=sn.nextInt();
+            }
+        }
+        int[] mediana = median(matrix);
+        printVec(mediana);
+    }
+}

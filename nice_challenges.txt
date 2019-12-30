@@ -1,0 +1,2 @@
+a challenge to generate every possible arrange of parentheses:
+https://www.codewars.com/kata/all-balanced-parentheses/train/python
